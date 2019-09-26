@@ -1,0 +1,2 @@
+include ':app', ':sloader-core', ':sloader-compiler', ':sloader-annotation'
+rootProject.name='SLoader'
