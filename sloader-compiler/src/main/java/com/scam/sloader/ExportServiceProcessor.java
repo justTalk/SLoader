@@ -38,25 +38,32 @@ public class ExportServiceProcessor extends AbstractProcessor {
 
     private Messager mMessager;
     private Filer mFiler;
+    private String mModuleName = "";
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
         mFiler = processingEnvironment.getFiler();
         mMessager = processingEnvironment.getMessager();
+        Map<String, String> options = processingEnvironment.getOptions();
+        mModuleName = options != null ? options.get(SConfig.SLOADER_MODULE_KEY) : null;
     }
 
     @Override
-    public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
+    public synchronized boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
         Set<? extends Element> elements = roundEnvironment.getElementsAnnotatedWith(ExportService.class);
         if (elements != null && elements.size() > 0) {
-            mMessager.printMessage(Diagnostic.Kind.NOTE, "======== process ==== " + elements.size() + roundEnvironment);
             HashMap<String, String> map = new HashMap<>();
             for (Element e :
                     elements) {
                 ExportService exportService = e.getAnnotation(ExportService.class);
+                if (map.containsKey(exportService.value())) {
+                    throw new RuntimeException("the same key is not allowed ");
+                }
                 map.put(exportService.value(), e.asType().toString());
+                mMessager.printMessage(Diagnostic.Kind.NOTE, "======== process ==== map is " + map.hashCode() + " size is " + map.size());
             }
+            mMessager.printMessage(Diagnostic.Kind.NOTE, "======== process ==== write map is " + map.hashCode()  + " " + map.size());
             createConfigFile(map);
         }
         return true;
@@ -64,7 +71,7 @@ public class ExportServiceProcessor extends AbstractProcessor {
 
     private void createConfigFile(HashMap<String, String> map){
         JavaFile javaFile = JavaFile.builder(SConfig.SLOADER_SERIVICE_PACKAGE,
-                TypeSpec.classBuilder(SConfig.SLOADER_SERIVICE_NAME)
+                TypeSpec.classBuilder(mModuleName)
                         .addModifiers(Modifier.PUBLIC)
                         .addMethod(createMethod(map))
                         .build())

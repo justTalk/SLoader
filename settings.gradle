@@ -1,2 +1,2 @@
-include ':app', ':sloader-core', ':sloader-compiler', ':sloader-annotation', ':sloader-api', ':other'
+include ':app', ':sloader-compiler', ':sloader-annotation', ':sloader-api', ':other'
 rootProject.name='SLoader'

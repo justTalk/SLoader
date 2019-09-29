@@ -12,8 +12,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        SLoader.init();
-        SLoader.findServiceImplByName(this, "TestService");
-        SLoader.findServiceImplByName(this, "OtherService");
+        //SLoader.init();
+        //SLoader.findServiceImplByName(this, "TestService");
+        //SLoader.findServiceImplByName(this, "OtherService");
+        SLoader.findAllConfigFile(this);
     }
 }

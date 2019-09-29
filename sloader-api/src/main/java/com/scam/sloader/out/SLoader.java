@@ -1,16 +1,22 @@
 package com.scam.sloader.out;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.scam.sloader.api.EmptyServiceImpl;
 import com.scam.sloader.api.IService;
 import com.scam.sloader.utils.ClassUtils;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Set;
+
+import dalvik.system.DexFile;
 
 /**
  * Date: 2019-09-26
@@ -89,6 +95,19 @@ public class SLoader {
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void findAllConfigFile(Context context){
+        try {
+            Set<String> fileNames =  ClassUtils.getFileNameByPackageName(context, "com.scam.sloader.config");
+            Log.d("SLoader", fileNames.toString());
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
